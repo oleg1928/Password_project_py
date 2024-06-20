@@ -59,7 +59,7 @@ Display.pack()
 
 
 mainloop()
-
+print("hello")
 
 
 """if was_file_opened_recently("C:/Users/Admin/OneDrive/Desktop/Novus me.docx") == True:
