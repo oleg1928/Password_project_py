@@ -3,6 +3,8 @@
 import os
 import datetime
 from tkinter import *
+
+
 def was_file_opened_recently(filepath) -> bool:
     """
     Check if a file was opened within the last 'threshold_minutes' minutes.
@@ -28,9 +30,10 @@ def was_file_opened_recently(filepath) -> bool:
         return True
     return False
 
+
 # Implementing GUI
 root = Tk()
-root.geometry("300x300")
+root.geometry("1640x1900")
 root.title("Password")
 
 
@@ -46,8 +49,6 @@ inputtxt = Text(root, height=10,
                 width=25,
                 bg="light yellow")
 
-
-
 Display = Button(root, height=2,
                  width=20,
                  text="Continue",
@@ -57,10 +58,30 @@ l.pack()
 inputtxt.pack()
 Display.pack()
 
+def on_minimize(event):
+    # Restore the window if it is minimized
+    if root.state() == 'iconic':
+        root.after(1, root.deiconify)
+
+def lock_position():
+    # Continuously reset window position to (100, 100)
+    x, y = 0, 0
+    root.geometry(f"+{x}+{y}")
+    root.after(100, lock_position)
+
+def on_closing():
+    # Do nothing when trying to close the window
+    pass
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
+root.bind('<Unmap>', on_minimize)
+
+lock_position()
+
+root.resizable(False, False)
 
 mainloop()
-print("hello")
-
+print("hello")  # this is here for no reason
 
 """if was_file_opened_recently("C:/Users/Admin/OneDrive/Desktop/Novus me.docx") == True:
     
