@@ -3,7 +3,7 @@
 import os
 import datetime
 from tkinter import *
-
+import random
 
 def was_file_opened_recently(filepath) -> bool:
     """
@@ -81,7 +81,27 @@ lock_position()
 root.resizable(False, False)
 
 mainloop()
-print("hello")  # this is here for no reason
+
+# Creates a password
+def create_password():
+    alphab = list(map(chr, range(97, 123)))
+    high_alphab = list(map(chr, range(65, 90)))
+
+    pasw = ""
+    for i in range(16):
+        num = random.randint(1, 3)
+        # if num is 1 insert number
+        if num == 1:
+            pasw += random.randint(1,9)
+        elif num == 2:
+            pasw += alphab[random.randint(0, 25)]
+        elif num == 3:
+            pasw += high_alphab[random.randint(0, 25)]
+    return pasw
+
+
+# with 1-10, a-z, A-Z, 16 cherecters
+
 
 """if was_file_opened_recently("C:/Users/Admin/OneDrive/Desktop/Novus me.docx") == True:
     
