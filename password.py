@@ -2,13 +2,15 @@
 # when you open locked file, it will open GUI asking you for password, if right -> go, else close the menu
 import os
 import datetime
+import time
 from tkinter import *
 import random
+from time import sleep
 
 class FileManager:
     def __init__(self, filepath):
         self.filepath = filepath
-    def was_file_opened_recently(self, filepath) -> bool:
+    def was_file_opened_recently(self) -> bool:
         """
         Check if a file was opened within the last 'threshold_minutes' minutes.
 
@@ -16,25 +18,26 @@ class FileManager:
         :param threshold_minutes: Time threshold in minutes
         :return: True if the file was opened within the threshold, False otherwise
         """
-        if not os.path.exists(filepath):
-            raise FileNotFoundError(f"The file {filepath} does not exist.")
+        if not os.path.exists(self.filepath):
+            raise FileNotFoundError(f"The file {self.filepath} does not exist.")
 
         # Get the current time
         current_time = datetime.datetime.now()
 
         # Get the file's last access time
-        last_access_time = datetime.datetime.fromtimestamp(os.path.getatime(filepath))
+        last_access_time = datetime.datetime.fromtimestamp(os.path.getatime(self.filepath))
 
         # Calculate the time difference in minutes
         time_difference = (current_time - last_access_time).total_seconds()
         # print(time_difference)
         # Check if the file was accessed within the second
-        if time_difference < 1:
+        if time_difference < 10:
             return True
         return False
 
 class ImplGUI:
-    def __init__(self):
+    def __init__(self, passfile):
+        self.passfile = passfile
         self.root = Tk()
         self.root.geometry("1640x1900")
         self.root.title("Password")
@@ -57,10 +60,15 @@ class ImplGUI:
 
 
     def Take_input(self):
+        """time.sleep(5)
+        open("C:/Users/Admin/OneDrive/Desktop/password.txt", "w").close()"""
         INPUT = self.inputtxt.get("1.0", "end-1c")
+        with open(self.passfile, 'r') as file:
+            saved_password = file.read().strip()
         # if input == password
-        if (INPUT == "120"):
-            pass
+        if (INPUT == password):
+            print("Password is correct")
+            self.root.destroy()
 
 
 
@@ -84,6 +92,8 @@ class ImplGUI:
 
 
 class Passw:
+    def __init__(self, passfile):
+        self.passfile = passfile
 
     # Creates a password
     def create_password(self):
@@ -95,17 +105,25 @@ class Passw:
             num = random.randint(1, 3)
             # if num is 1 insert number
             if num == 1:
-                pasw += random.randint(1,9)
+                pasw += str(random.randint(1,9))
             elif num == 2:
                 pasw += alphab[random.randint(0, 25)]
             elif num == 3:
-                pasw += high_alphab[random.randint(0, 25)]
+                pasw += high_alphab[random.randint(0, 24)]
+        with open(self.passfile, "w") as file:
+            file.write(pasw)
+        print(pasw)
+
         return pasw
 
+passfille = "C:/Users/Admin/OneDrive/Desktop/password.txt"
 
-# with 1-10, a-z, A-Z, 16 cherecters
 
 
-"""if was_file_opened_recently("C:/Users/Admin/OneDrive/Desktop/Novus me.docx") == True:
-    
-"""
+passmanager = Passw(passfille)
+password = passmanager.create_password()
+fileman = FileManager("C:/Users/Admin/OneDrive/Desktop/Novus me.docx")
+if fileman.was_file_opened_recently() == True:
+    ImplGUI(passfille)
+
+
