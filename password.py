@@ -5,99 +5,102 @@ import datetime
 from tkinter import *
 import random
 
-def was_file_opened_recently(filepath) -> bool:
-    """
-    Check if a file was opened within the last 'threshold_minutes' minutes.
+class FileManager:
+    def __init__(self, filepath):
+        self.filepath = filepath
+    def was_file_opened_recently(self, filepath) -> bool:
+        """
+        Check if a file was opened within the last 'threshold_minutes' minutes.
 
-    :param filepath: Path to the file
-    :param threshold_minutes: Time threshold in minutes
-    :return: True if the file was opened within the threshold, False otherwise
-    """
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"The file {filepath} does not exist.")
+        :param filepath: Path to the file
+        :param threshold_minutes: Time threshold in minutes
+        :return: True if the file was opened within the threshold, False otherwise
+        """
+        if not os.path.exists(filepath):
+            raise FileNotFoundError(f"The file {filepath} does not exist.")
 
-    # Get the current time
-    current_time = datetime.datetime.now()
+        # Get the current time
+        current_time = datetime.datetime.now()
 
-    # Get the file's last access time
-    last_access_time = datetime.datetime.fromtimestamp(os.path.getatime(filepath))
+        # Get the file's last access time
+        last_access_time = datetime.datetime.fromtimestamp(os.path.getatime(filepath))
 
-    # Calculate the time difference in minutes
-    time_difference = (current_time - last_access_time).total_seconds()
-    print(time_difference)
-    # Check if the file was accessed within the threshold
-    if time_difference < 1:
-        return True
-    return False
+        # Calculate the time difference in minutes
+        time_difference = (current_time - last_access_time).total_seconds()
+        # print(time_difference)
+        # Check if the file was accessed within the second
+        if time_difference < 1:
+            return True
+        return False
+
+class ImplGUI:
+    def __init__(self):
+        self.root = Tk()
+        self.root.geometry("1640x1900")
+        self.root.title("Password")
+        self.set_gui()
+
+    def set_gui(self):
+        self.l = Label(text="What is the password?")
+        self.inputtxt = Text(self.root, height=10,width=25,bg="light yellow")
+        self.display = Button(self.root, height=2,width=20,text="Continue",command=lambda: self.Take_input())
+        self.l.pack()
+        self.inputtxt.pack()
+        self.display.pack()
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.root.bind('<Unmap>', self.on_minimize)
+        self.lock_position()
+        self.root.resizable(False, False)
+        self.root.mainloop()
 
 
-# Implementing GUI
-root = Tk()
-root.geometry("1640x1900")
-root.title("Password")
 
 
-def Take_input():
-    INPUT = inputtxt.get("1.0", "end-1c")
-    # if input == password
-    if (INPUT == "120"):
+    def Take_input(self):
+        INPUT = self.inputtxt.get("1.0", "end-1c")
+        # if input == password
+        if (INPUT == "120"):
+            pass
+
+
+
+
+
+
+    def on_minimize(self, event):
+        # Restore the window if it is minimized
+        if self.root.state() == 'iconic':
+            self.root.after(1, self.root.deiconify)
+
+    def lock_position(self):
+        # Continuously reset window position to (100, 100)
+        x, y = 0, 0
+        self.root.geometry(f"+{x}+{y}")
+        self.root.after(100, self.lock_position)
+
+    def on_closing(self):
+        # Do nothing when trying to close the window
         pass
 
 
-l = Label(text="What is the password?")
-inputtxt = Text(root, height=10,
-                width=25,
-                bg="light yellow")
+class Passw:
 
-Display = Button(root, height=2,
-                 width=20,
-                 text="Continue",
-                 command=lambda: Take_input())
+    # Creates a password
+    def create_password(self):
+        alphab = list(map(chr, range(97, 123)))
+        high_alphab = list(map(chr, range(65, 90)))
 
-l.pack()
-inputtxt.pack()
-Display.pack()
-
-def on_minimize(event):
-    # Restore the window if it is minimized
-    if root.state() == 'iconic':
-        root.after(1, root.deiconify)
-
-def lock_position():
-    # Continuously reset window position to (100, 100)
-    x, y = 0, 0
-    root.geometry(f"+{x}+{y}")
-    root.after(100, lock_position)
-
-def on_closing():
-    # Do nothing when trying to close the window
-    pass
-root.protocol("WM_DELETE_WINDOW", on_closing)
-
-root.bind('<Unmap>', on_minimize)
-
-lock_position()
-
-root.resizable(False, False)
-
-mainloop()
-
-# Creates a password
-def create_password():
-    alphab = list(map(chr, range(97, 123)))
-    high_alphab = list(map(chr, range(65, 90)))
-
-    pasw = ""
-    for i in range(16):
-        num = random.randint(1, 3)
-        # if num is 1 insert number
-        if num == 1:
-            pasw += random.randint(1,9)
-        elif num == 2:
-            pasw += alphab[random.randint(0, 25)]
-        elif num == 3:
-            pasw += high_alphab[random.randint(0, 25)]
-    return pasw
+        pasw = ""
+        for i in range(16):
+            num = random.randint(1, 3)
+            # if num is 1 insert number
+            if num == 1:
+                pasw += random.randint(1,9)
+            elif num == 2:
+                pasw += alphab[random.randint(0, 25)]
+            elif num == 3:
+                pasw += high_alphab[random.randint(0, 25)]
+        return pasw
 
 
 # with 1-10, a-z, A-Z, 16 cherecters
