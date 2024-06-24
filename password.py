@@ -5,7 +5,6 @@ import datetime
 import time
 from tkinter import *
 import random
-from time import sleep
 
 class FileManager:
     def __init__(self, filepath):
@@ -14,8 +13,7 @@ class FileManager:
         """
         Check if a file was opened within the last 'threshold_minutes' minutes.
 
-        :param filepath: Path to the file
-        :param threshold_minutes: Time threshold in minutes
+
         :return: True if the file was opened within the threshold, False otherwise
         """
         if not os.path.exists(self.filepath):
@@ -31,7 +29,7 @@ class FileManager:
         time_difference = (current_time - last_access_time).total_seconds()
         # print(time_difference)
         # Check if the file was accessed within the second
-        if time_difference < 10:
+        if time_difference < 1:
             return True
         return False
 
@@ -66,9 +64,10 @@ class ImplGUI:
         with open(self.passfile, 'r') as file:
             saved_password = file.read().strip()
         # if input == password
-        if (INPUT == password):
+        if (INPUT == saved_password):
             print("Password is correct")
             self.root.destroy()
+
 
 
 
@@ -112,18 +111,23 @@ class Passw:
                 pasw += high_alphab[random.randint(0, 24)]
         with open(self.passfile, "w") as file:
             file.write(pasw)
-        print(pasw)
 
         return pasw
 
-passfille = "C:/Users/Admin/OneDrive/Desktop/password.txt"
+def main():
+    passfile = "C:/Users/Admin/OneDrive/Desktop/password.txt"
+    filepath = "C:/Users/Admin/OneDrive/Desktop/Novus me.docx"
+    fileman = FileManager(filepath)
+
+    while True:
+        if fileman.was_file_opened_recently():
+            passmanager = Passw(passfile)
+            password = passmanager.create_password()
+            ImplGUI(passfile)
+        time.sleep(5)  # Check every 5 seconds
 
 
-
-passmanager = Passw(passfille)
-password = passmanager.create_password()
-fileman = FileManager("C:/Users/Admin/OneDrive/Desktop/Novus me.docx")
-if fileman.was_file_opened_recently() == True:
-    ImplGUI(passfille)
+if __name__ == "__main__":
+    main()
 
 
