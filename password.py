@@ -5,6 +5,7 @@ import datetime
 import time
 from tkinter import *
 import random
+import keyboard
 
 class FileManager:
     def __init__(self, filepath):
@@ -29,7 +30,7 @@ class FileManager:
         time_difference = (current_time - last_access_time).total_seconds()
         # print(time_difference)
         # Check if the file was accessed within the second
-        if time_difference < 1:
+        if time_difference < 4:
             return True
         return False
 
@@ -42,17 +43,32 @@ class ImplGUI:
         self.set_gui()
 
     def set_gui(self):
+        font_settings = ("Helvetica", 14)
+
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
+        self.root.rowconfigure(1, weight=1)
+        self.root.rowconfigure(2, weight=1)
+
         self.l = Label(text="What is the password?")
-        self.inputtxt = Text(self.root, height=10,width=25,bg="light yellow")
+        self.l.grid(row=0, column=0, pady=20)
+
+        self.inputtxt = Text(self.root, height=10,width=25,bg="light yellow", font=font_settings)
+        self.inputtxt.grid(row=1, column=0, pady=20)
+
         self.display = Button(self.root, height=2,width=20,text="Continue",command=lambda: self.Take_input())
-        self.l.pack()
+        self.display.grid(row=2, column=0, pady=20)
+
+        """self.l.pack()
         self.inputtxt.pack()
-        self.display.pack()
+        self.display.pack()"""
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.bind('<Unmap>', self.on_minimize)
         self.lock_position()
+        # self.root.attributes('-topmost', True)
         self.root.resizable(False, False)
         self.root.mainloop()
+
 
 
 
@@ -67,6 +83,8 @@ class ImplGUI:
         if (INPUT == saved_password):
             print("Password is correct")
             self.root.destroy()
+        else:
+            self.Take_input()
 
 
 
@@ -88,6 +106,7 @@ class ImplGUI:
     def on_closing(self):
         # Do nothing when trying to close the window
         pass
+
 
 
 class Passw:
@@ -119,12 +138,17 @@ def main():
     filepath = "C:/Users/Admin/OneDrive/Desktop/Novus me.docx"
     fileman = FileManager(filepath)
 
+
     while True:
+        keyboard.block_key('Win')
         if fileman.was_file_opened_recently():
             passmanager = Passw(passfile)
             password = passmanager.create_password()
+            time.sleep(1)
             ImplGUI(passfile)
-        time.sleep(5)  # Check every 5 seconds
+            time.sleep(1200)
+        # Check every 5 seconds
+        time.sleep(3)
 
 
 if __name__ == "__main__":
